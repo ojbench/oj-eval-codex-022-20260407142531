@@ -50,20 +50,21 @@ static pair<int,int> find_extrema(int n, int &mid1, int &mid2) {
 
     // Use a fixed pivot 'a' = mid1 to test other indices and update m and M
     int a = mid1;
-    // Precompute baselines for comparisons; will be recomputed when m or M changes.
+    long long base_min = query(M, a, m);
+    long long base_max = query(m, a, M);
     for (int t = 1; t <= n; ++t) {
         if (t == m || t == M || t == a) continue;
-        // Test if t is new minimum: query(M, a, t) < query(M, a, m)
-        long long base_min = query(M, a, m);
         long long cur_min = query(M, a, t);
         if (cur_min < base_min) {
             m = t;
+            base_min = cur_min;
+            base_max = query(m, a, M);
         } else {
-            // Test if t is new maximum: query(m, a, t) > query(m, a, M)
-            long long base_max = query(m, a, M);
             long long cur_max = query(m, a, t);
             if (cur_max > base_max) {
                 M = t;
+                base_max = cur_max;
+                base_min = query(M, a, m);
             }
         }
     }
@@ -131,4 +132,3 @@ int guess(int n, int Taskid) {
     // Return hash of A
     return hash_sum(A);
 }
-
